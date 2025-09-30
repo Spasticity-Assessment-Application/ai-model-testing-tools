@@ -1,16 +1,123 @@
-# poc
+# POC - Spasticity Assessment Application
 
-A new Flutter project.
+Proof of Concept (POC) of a mobile application using a lightweight AI model to validate the feasibility of the spasticity assessment application.
 
-## Getting Started
+## 📱 About the Project
 
-This project is a starting point for a Flutter application.
+This Flutter application serves as a POC to demonstrate the feasibility of a mobile spasticity assessment application using lightweight artificial intelligence models. The goal is to validate technical concepts before developing the complete application.
 
-A few resources to get you started if this is your first Flutter project:
+## 🏗️ Project Architecture
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The project follows a clean architecture with clear separation of responsibilities:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+lib/
+│
+├── main.dart
+├── app.dart
+├── router/
+│   └── app_router.dart
+│
+├── core/
+│   ├── errors/
+│   ├── utils/
+│   └── widgets/
+│
+├── features/
+│   ├── feature/
+│   │   ├── data/
+│   │   ├── logic/
+│   │   └── presentation/
+│   │       ├── pages/
+│   │       └── widgets/
+```
+
+### Environment Verification
+
+```bash
+flutter doctor
+```
+
+This command checks that all necessary tools are properly installed.
+
+## 🚀 Installation and Launch
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Spasticity-Assessment-Application/POC.git
+cd POC
+```
+
+### 2. Install Dependencies
+
+```bash
+flutter pub get
+```
+
+### 3. Check Available Devices
+
+```bash
+flutter devices
+```
+
+### 4. Run the Application
+
+#### On an emulator/simulator:
+
+```bash
+flutter run
+```
+
+#### On a specific device:
+
+```bash
+flutter run -d <device-id>
+```
+
+#### In debug mode with hot reload:
+
+```bash
+flutter run --debug
+```
+
+#### In release mode:
+
+```bash
+flutter run --release
+```
+
+## 🏃‍♂️ Useful Scripts
+
+### Development
+
+```bash
+# Run in debug mode with hot reload
+flutter run
+
+# Analyze code
+flutter analyze
+
+# Format code
+dart format .
+
+# Run tests
+flutter test
+```
+
+### Build
+
+```bash
+# Build for Android
+flutter build apk
+flutter build appbundle  # For Play Store
+
+# Build for iOS
+flutter build ios
+
+# Build for Web
+flutter build web
+
+# Build for Desktop (macOS)
+flutter build macos
+```
