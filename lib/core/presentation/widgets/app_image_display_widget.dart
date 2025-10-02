@@ -38,15 +38,10 @@ class AppImageDisplayWidget extends StatelessWidget {
                 ),
               ],
             )
-          : BoxDecoration(
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
+          : BoxDecoration(borderRadius: BorderRadius.circular(borderRadius)),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: Image.file(
-          File(imagePath),
-          fit: fit,
-        ),
+        child: Image.file(File(imagePath), fit: fit),
       ),
     );
 

@@ -23,16 +23,14 @@ class PhotoDisplayPage extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               context.pushReplacement('/camera');
             });
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           return Column(
             children: [
               // Photo display widget
               PhotoDisplayWidget(imagePath: state.capturedPhotoPath!),
-              
+
               // Photo actions widget
               PhotoActionsWidget(captureTime: state.captureTime),
             ],

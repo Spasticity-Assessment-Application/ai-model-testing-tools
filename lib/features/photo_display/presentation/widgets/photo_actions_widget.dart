@@ -7,10 +7,7 @@ import '../../../../../core/presentation/widgets/widgets.dart';
 class PhotoActionsWidget extends StatelessWidget {
   final DateTime? captureTime;
 
-  const PhotoActionsWidget({
-    super.key,
-    this.captureTime,
-  });
+  const PhotoActionsWidget({super.key, this.captureTime});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +18,7 @@ class PhotoActionsWidget extends StatelessWidget {
           if (captureTime != null)
             Text(
               'Captured: ${captureTime!.toString().substring(0, 19)}',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12,
-              ),
+              style: TextStyle(color: Colors.grey[600], fontSize: 12),
             ),
           const SizedBox(height: 16),
           AppActionButtonsWidget(

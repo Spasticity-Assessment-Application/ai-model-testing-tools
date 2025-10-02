@@ -4,10 +4,7 @@ import '../../../../../core/presentation/widgets/widgets.dart';
 class PhotoDisplayWidget extends StatelessWidget {
   final String imagePath;
 
-  const PhotoDisplayWidget({
-    super.key,
-    required this.imagePath,
-  });
+  const PhotoDisplayWidget({super.key, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {

@@ -49,10 +49,10 @@ class AppActionButtonsWidget extends StatelessWidget {
 
   List<Widget> _buildButtons() {
     List<Widget> widgets = [];
-    
+
     for (int i = 0; i < buttons.length; i++) {
       final button = buttons[i];
-      
+
       Widget buttonWidget = Container(
         margin: EdgeInsets.only(
           right: i < buttons.length - 1 ? spacing / 2 : 0,
@@ -76,15 +76,15 @@ class AppActionButtonsWidget extends StatelessWidget {
           ),
         ),
       );
-      
+
       // Only wrap with Expanded if expandButtons is true
       if (expandButtons) {
         buttonWidget = Expanded(child: buttonWidget);
       }
-      
+
       widgets.add(buttonWidget);
     }
-    
+
     return widgets;
   }
 }

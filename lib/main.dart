@@ -7,9 +7,6 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-    BlocProvider(
-      create: (context) => AppPhotoCubit(),
-      child: const App(),
-    ),
+    BlocProvider(create: (context) => AppPhotoCubit(), child: const App()),
   );
 }

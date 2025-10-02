@@ -7,12 +7,12 @@ class MockCameraState {
     // On web or when debugging on simulator
     return kIsWeb || (kDebugMode && _isRunningOnSimulator());
   }
-  
+
   static bool _isRunningOnSimulator() {
     // Simple detection based on environment
     return Platform.isIOS && kDebugMode;
   }
-  
+
   static CameraState get mockCameraReadyState {
     return CameraInitial(); // Returns a simulated state
   }

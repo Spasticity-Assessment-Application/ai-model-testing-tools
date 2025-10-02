@@ -5,15 +5,9 @@ class AppPhotoState {
   final String? capturedPhotoPath;
   final DateTime? captureTime;
 
-  AppPhotoState({
-    this.capturedPhotoPath,
-    this.captureTime,
-  });
+  AppPhotoState({this.capturedPhotoPath, this.captureTime});
 
-  AppPhotoState copyWith({
-    String? capturedPhotoPath,
-    DateTime? captureTime,
-  }) {
+  AppPhotoState copyWith({String? capturedPhotoPath, DateTime? captureTime}) {
     return AppPhotoState(
       capturedPhotoPath: capturedPhotoPath ?? this.capturedPhotoPath,
       captureTime: captureTime ?? this.captureTime,
@@ -26,10 +20,9 @@ class AppPhotoCubit extends Cubit<AppPhotoState> {
   AppPhotoCubit() : super(AppPhotoState());
 
   void setCapturedPhoto(String imagePath) {
-    emit(state.copyWith(
-      capturedPhotoPath: imagePath,
-      captureTime: DateTime.now(),
-    ));
+    emit(
+      state.copyWith(capturedPhotoPath: imagePath, captureTime: DateTime.now()),
+    );
   }
 
   void clearCapturedPhoto() {
