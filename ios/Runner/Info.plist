@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to the camera to take photos for spasticity assessment.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app uses the local network for development purposes only (hot reload).</string>
 </dict>
 </plist>
