@@ -61,11 +61,19 @@ class AppActionButtonsWidget extends StatelessWidget {
         child: ElevatedButton.icon(
           onPressed: button.onPressed,
           icon: Icon(button.icon),
-          label: Text(button.label),
+          label: Text(
+            button.label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: button.backgroundColor,
             foregroundColor: button.foregroundColor,
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            minimumSize: const Size(0, 56),
+            maximumSize: const Size(double.infinity, 80),
             shape: isRounded
                 ? RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
