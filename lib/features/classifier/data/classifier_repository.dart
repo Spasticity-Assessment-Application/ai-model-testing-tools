@@ -33,7 +33,8 @@ class ClassifierRepository {
   Future<void> _loadLabels() async {
     try {
       final labelsData = await rootBundle.loadString(_labelsPath);
-      _labels = labelsData.split('\n')
+      _labels = labelsData
+          .split('\n')
           .where((label) => label.trim().isNotEmpty)
           .toList();
     } catch (e) {
@@ -50,8 +51,11 @@ class ClassifierRepository {
     try {
       final imageData = await _preprocessImage(imagePath);
       final input = [imageData];
-      final output = List.filled(1 * _labels!.length, 0.0).reshape([1, _labels!.length]);
-      
+      final output = List.filled(
+        1 * _labels!.length,
+        0.0,
+      ).reshape([1, _labels!.length]);
+
       _interpreter!.run(input, output);
       return _processResults(output[0]);
     } catch (e) {
@@ -60,19 +64,21 @@ class ClassifierRepository {
   }
 
   /// Preprocess image to MobileNetV2 format (224x224x3, normalized 0-1)
-  Future<List<List<List<List<double>>>>> _preprocessImage(String imagePath) async {
+  Future<List<List<List<List<double>>>>> _preprocessImage(
+    String imagePath,
+  ) async {
     try {
       final imageFile = File(imagePath);
       final imageBytes = await imageFile.readAsBytes();
       final image = img.decodeImage(imageBytes);
-      
+
       if (image == null) {
         throw ClassifierException('Unable to decode image');
       }
 
       final resizedImage = img.copyResize(
-        image, 
-        width: _inputSize, 
+        image,
+        width: _inputSize,
         height: _inputSize,
       );
 
@@ -82,22 +88,19 @@ class ClassifierRepository {
           _inputSize,
           (y) => List.generate(
             _inputSize,
-            (x) => List.generate(
-              _numChannels,
-              (c) {
-                final pixel = resizedImage.getPixel(x, y);
-                switch (c) {
-                  case 0:
-                    return pixel.r / 255.0;
-                  case 1:
-                    return pixel.g / 255.0;
-                  case 2:
-                    return pixel.b / 255.0;
-                  default:
-                    return 0.0;
-                }
-              },
-            ),
+            (x) => List.generate(_numChannels, (c) {
+              final pixel = resizedImage.getPixel(x, y);
+              switch (c) {
+                case 0:
+                  return pixel.r / 255.0;
+                case 1:
+                  return pixel.g / 255.0;
+                case 2:
+                  return pixel.b / 255.0;
+                default:
+                  return 0.0;
+              }
+            }),
           ),
         ),
       );
@@ -115,12 +118,9 @@ class ClassifierRepository {
     }
 
     final predictions = <Prediction>[];
-    
+
     for (int i = 0; i < outputs.length && i < _labels!.length; i++) {
-      predictions.add(Prediction(
-        label: _labels![i],
-        confidence: outputs[i],
-      ));
+      predictions.add(Prediction(label: _labels![i], confidence: outputs[i]));
     }
 
     predictions.sort((a, b) => b.confidence.compareTo(a.confidence));
@@ -155,7 +155,8 @@ class ClassificationResult {
     required this.processingTime,
   });
 
-  Prediction? get topPrediction => predictions.isNotEmpty ? predictions.first : null;
+  Prediction? get topPrediction =>
+      predictions.isNotEmpty ? predictions.first : null;
 
   List<Prediction> getConfidentPredictions(double threshold) {
     return predictions.where((p) => p.confidence >= threshold).toList();
@@ -171,10 +172,7 @@ class Prediction {
   final String label;
   final double confidence;
 
-  Prediction({
-    required this.label,
-    required this.confidence,
-  });
+  Prediction({required this.label, required this.confidence});
 
   double get confidencePercentage => confidence * 100;
 
@@ -186,9 +184,9 @@ class Prediction {
 
 class ClassifierException implements Exception {
   final String message;
-  
+
   ClassifierException(this.message);
-  
+
   @override
   String toString() => 'ClassifierException: $message';
 }

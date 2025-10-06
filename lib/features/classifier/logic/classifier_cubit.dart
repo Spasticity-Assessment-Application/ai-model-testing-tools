@@ -7,8 +7,8 @@ class ClassifierCubit extends Cubit<ClassifierState> {
   final ClassifierRepository _repository;
 
   ClassifierCubit({ClassifierRepository? repository})
-      : _repository = repository ?? ClassifierRepository(),
-        super(ClassifierInitial());
+    : _repository = repository ?? ClassifierRepository(),
+      super(ClassifierInitial());
 
   Future<void> initializeModel() async {
     if (state is ClassifierReady) {
@@ -32,18 +32,17 @@ class ClassifierCubit extends Cubit<ClassifierState> {
 
     try {
       emit(ClassifierClassifying());
-      
+
       final result = await _repository.classifyImage(imagePath);
-      
-      emit(ClassifierResult(
-        result: result,
-        imagePath: imagePath,
-      ));
+
+      emit(ClassifierResult(result: result, imagePath: imagePath));
     } catch (e) {
-      emit(ClassifierError(
-        'Classification failed: ${e.toString()}',
-        imagePath: imagePath,
-      ));
+      emit(
+        ClassifierError(
+          'Classification failed: ${e.toString()}',
+          imagePath: imagePath,
+        ),
+      );
     }
   }
 
