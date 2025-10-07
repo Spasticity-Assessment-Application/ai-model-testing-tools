@@ -18,10 +18,7 @@ class ClassifierResult extends ClassifierState {
   final ClassificationResult result;
   final String imagePath;
 
-  ClassifierResult({
-    required this.result,
-    required this.imagePath,
-  });
+  ClassifierResult({required this.result, required this.imagePath});
 
   @override
   List<Object?> get props => [result, imagePath];

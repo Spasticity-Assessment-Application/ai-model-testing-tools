@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +9,7 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   static const cameraRoute = '/camera';
-  static const photoDisplayRoute = '/photo-display'; 
+  static const photoDisplayRoute = '/photo-display';
 
   Future<void> _pickFromGallery(BuildContext context) async {
     final picker = ImagePicker();
@@ -20,12 +19,11 @@ class HomePage extends StatelessWidget {
     // on envoie juste le path
     context.read<AppPhotoCubit>().setCapturedPhoto(x.path);
 
-  // redirige vers la page d’affichage photo 
+    // redirige vers la page d’affichage photo
     if (context.mounted) {
       context.push('/photo-display');
     }
   }
-
 
   void _openCamera(BuildContext context) => context.push(cameraRoute);
 
