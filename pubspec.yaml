@@ -67,7 +67,8 @@ flutter:
   # Assets pour les modèles ML et autres ressources
   assets:
     - assets/models/
-
+    - assets/models/mobilenet_v2.tflite
+    - assets/models/labels.txt
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
