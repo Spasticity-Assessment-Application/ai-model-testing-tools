@@ -11,7 +11,7 @@ void main() {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AppPhotoCubit()),
-        BlocProvider(create: (context) => ClassifierCubit()),
+        BlocProvider(create: (context) => ClassifierCubit()..initializeModel()),
       ],
       child: const App(),
     ),
