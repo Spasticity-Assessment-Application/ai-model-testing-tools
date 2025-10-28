@@ -1,6 +1,6 @@
 import Foundation
-import UIKit
 import MediaPipeTasksVision
+import UIKit
 
 class PoseService {
     private var landmarker: PoseLandmarker?
@@ -14,7 +14,10 @@ class PoseService {
 
     private func initializeLandmarker() {
         do {
-            guard let modelPath = Bundle.main.path(forResource: modelAssetName, ofType: modelAssetType) else {
+            guard
+                let modelPath = Bundle.main.path(
+                    forResource: modelAssetName, ofType: modelAssetType)
+            else {
                 throw PoseEstimationError.modelNotFound
             }
 
@@ -52,7 +55,7 @@ class PoseService {
                     "x": landmark.x,
                     "y": landmark.y,
                     "z": landmark.z,
-                    "score": landmark.visibility
+                    "score": landmark.visibility,
                 ]
                 keypoints.append(keypoint)
             }
