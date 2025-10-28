@@ -9,7 +9,7 @@ class App extends StatelessWidget {
     final router = AppRouter().router;
 
     return MaterialApp.router(
-      title: 'POC Spasticity Assessment Application',
+      title: 'Application d\'évaluation de la spasticité POC',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
     );

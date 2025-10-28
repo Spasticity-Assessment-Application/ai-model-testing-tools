@@ -8,8 +8,7 @@ class ResultPage extends StatelessWidget {
   const ResultPage({super.key});
 
   String pourcentage(double p) => '${(p * 100).toStringAsFixed(1)}%';
-  
-  
+
   @override
   Widget build(BuildContext context) {
     final photoPath = context.select((AppPhotoCubit c) => c.currentPhotoPath);
@@ -63,7 +62,10 @@ class ResultPage extends StatelessWidget {
               }
 
               final top1 = preds.first;
-              final others = preds.skip(1).take(4).toList(); //on prend 4 autres possibilite
+              final others = preds
+                  .skip(1)
+                  .take(4)
+                  .toList(); //on prend 4 autres possibilite
 
               return SingleChildScrollView(
                 child: Column(
@@ -73,13 +75,11 @@ class ResultPage extends StatelessWidget {
                     photoPreview(),
                     const SizedBox(height: 16),
 
-                    // meilleur possibility 
+                    // meilleur possibility
                     Text(
                       top1.label,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
+                      style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 10),
@@ -104,7 +104,7 @@ class ResultPage extends StatelessWidget {
                     if (others.isNotEmpty) ...[
                       const SizedBox(height: 20),
                       Text(
-                        'Autres classes',
+                        'Autres classes possibles',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 6),
@@ -164,7 +164,9 @@ class ResultPage extends StatelessWidget {
               children: [
                 photoPreview(),
                 const SizedBox(height: 12),
-                const Text('Reclique sur "Analyze Photo" pour lancer la classification.'),  //si on a ce message, on fait retour arriere dans l'app et on re click analyse pour voir les resultats
+                const Text(
+                  'Reclique sur "Analyze Photo" pour lancer la classification.',
+                ), //si on a ce message, on fait retour arriere dans l'app et on re click analyse pour voir les resultats
               ],
             );
           },

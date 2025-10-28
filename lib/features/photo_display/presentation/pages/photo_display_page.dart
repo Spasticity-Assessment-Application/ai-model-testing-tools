@@ -11,7 +11,7 @@ class PhotoDisplayPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Captured Photo'),
+        title: const Text('Photo capturée'),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),

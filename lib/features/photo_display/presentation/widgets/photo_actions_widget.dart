@@ -18,7 +18,7 @@ class PhotoActionsWidget extends StatelessWidget {
         children: [
           if (captureTime != null)
             Text(
-              'Captured: ${captureTime!.toString().substring(0, 19)}',
+              'Capturé : ${captureTime!.toString().substring(0, 19)}',
               style: TextStyle(color: Colors.grey[600], fontSize: 12),
             ),
           const SizedBox(height: 16),
@@ -31,12 +31,14 @@ class PhotoActionsWidget extends StatelessWidget {
                   context.pushReplacement('/camera');
                 },
                 icon: Icons.camera_alt,
-                label: 'Retake Photo',
+                label: 'Reprendre la photo',
                 backgroundColor: Colors.orange,
               ),
               AppActionButton(
                 onPressed: () {
-                  final photoPath = context.read<AppPhotoCubit>().currentPhotoPath;
+                  final photoPath = context
+                      .read<AppPhotoCubit>()
+                      .currentPhotoPath;
                   if (photoPath == null) return;
 
                   final cubit = context.read<ClassifierCubit>();
@@ -49,7 +51,7 @@ class PhotoActionsWidget extends StatelessWidget {
                   context.push('/result');
                 },
                 icon: Icons.analytics,
-                label: 'Analyze Photo',
+                label: 'Analyser la photo',
                 backgroundColor: Colors.green,
               ),
             ],

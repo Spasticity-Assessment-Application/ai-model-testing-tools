@@ -3,7 +3,7 @@ import 'package:poc/features/home/presentation/home_page.dart';
 import 'package:poc/features/camera/camera.dart';
 import 'package:poc/features/photo_display/photo_display.dart';
 import 'package:poc/features/photo_display/presentation/pages/result_page.dart';
-import 'package:poc/features/pose/presentation/pose_page.dart';
+import 'package:poc/features/pose/presentation/pages/pose_page.dart';
 
 class AppRouter {
   GoRouter get router => GoRouter(

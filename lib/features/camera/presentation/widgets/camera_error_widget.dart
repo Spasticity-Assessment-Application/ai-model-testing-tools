@@ -26,7 +26,7 @@ class CameraErrorWidget extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () => context.read<CameraCubit>().initializeCamera(),
-                child: const Text('Retry'),
+                child: const Text('Réessayer'),
               ),
               if (message.contains('permanently denied') ||
                   message.contains('settings'))
@@ -41,7 +41,7 @@ class CameraErrorWidget extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                   ),
-                  child: const Text('Retry Permission'),
+                  child: const Text('Réessayer les permissions'),
                 ),
             ],
           ),

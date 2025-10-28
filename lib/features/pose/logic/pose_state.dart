@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
-import '../data/pose_repository.dart';
+import '../data/pose_model.dart';
 
 abstract class PoseState extends Equatable {
   @override
@@ -28,6 +28,10 @@ class PoseResultState extends PoseState {
 
   @override
   List<Object?> get props => [result, sourcePath, imageWidth, imageHeight];
+
+  @override
+  String toString() =>
+      'PoseResultState(path: $sourcePath, keypoints: ${result.keypoints.length})';
 }
 
 class PoseVideoAnalysisState extends PoseState {
@@ -59,6 +63,10 @@ class PoseVideoAnalysisState extends PoseState {
     currentFrameIndex,
     isPlaying,
   ];
+
+  @override
+  String toString() =>
+      'PoseVideoAnalysisState(path: $sourcePath, frames: ${frameResults.length}, current: $currentFrameIndex, playing: $isPlaying)';
 }
 
 class PoseError extends PoseState {

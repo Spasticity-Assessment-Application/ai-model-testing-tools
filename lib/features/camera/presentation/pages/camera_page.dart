@@ -30,7 +30,7 @@ class CameraView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Camera'),
+        title: const Text('Caméra'),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
@@ -47,7 +47,7 @@ class CameraView extends StatelessWidget {
           } else if (state is PhotoSaved) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Photo saved successfully!'),
+                content: Text('Photo enregistrée avec succès !'),
                 backgroundColor: Colors.green,
               ),
             );

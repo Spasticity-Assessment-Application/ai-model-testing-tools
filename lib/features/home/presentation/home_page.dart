@@ -32,25 +32,37 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: AppActionButtonsWidget(
-            buttons: [
-              AppActionButton(
-                onPressed: () => _openCamera(context),
-                icon: Icons.camera_alt,
-                label: 'Prendre une photo',
-                backgroundColor: Colors.orange,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AppActionButtonsWidget(
+                buttons: [
+                  AppActionButton(
+                    onPressed: () => _openCamera(context),
+                    icon: Icons.camera_alt,
+                    label: 'Prendre une photo',
+                    backgroundColor: Colors.orange,
+                  ),
+                  AppActionButton(
+                    onPressed: () => _pickFromGallery(context),
+                    icon: Icons.photo_library,
+                    label: 'Choisir une image',
+                    backgroundColor: Colors.green,
+                  ),
+                ],
               ),
-              AppActionButton(
-                onPressed: () => _pickFromGallery(context),
-                icon: Icons.photo_library,
-                label: 'Choisir une image',
-                backgroundColor: Colors.green,
-              ),
-              AppActionButton(
-                onPressed: () => _openPosePage(context),
-                icon: Icons.video_label,
-                label: 'Test pose',
-                backgroundColor: Colors.blue,
+              const SizedBox(height: 24),
+              AppActionButtonsWidget(
+                buttons: [
+                  AppActionButton(
+                    onPressed: () => _openPosePage(context),
+                    icon: Icons.video_label,
+                    label: 'Test pose',
+                    backgroundColor: Colors.blue,
+                  ),
+                ],
+                expandButtons: false,
+                mainAxisAlignment: MainAxisAlignment.center,
               ),
             ],
           ),

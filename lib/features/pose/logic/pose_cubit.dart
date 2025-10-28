@@ -4,14 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as img;
 import 'package:video_thumbnail/video_thumbnail.dart';
 import '../data/pose_repository.dart';
+import '../data/pose_model.dart';
+import '../data/media_pipe_pose_model.dart';
 import 'pose_state.dart';
 
 class PoseCubit extends Cubit<PoseState> {
   final PoseRepository _repository;
   Timer? _playbackTimer;
 
-  PoseCubit({PoseRepository? repository})
-    : _repository = repository ?? PoseRepository(),
+  PoseCubit({PoseModel? poseModel})
+    : _repository = PoseRepository(poseModel ?? MediaPipePoseModel()),
       super(PoseInitial());
 
   Future<void> initialize() async {

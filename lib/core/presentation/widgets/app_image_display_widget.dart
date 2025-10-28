@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 class AppImageDisplayWidget extends StatelessWidget {
-  final String imagePath;
+  final String? imagePath;
+  final Uint8List? imageBytes;
   final EdgeInsets? margin;
   final EdgeInsets? padding;
   final double borderRadius;
@@ -12,17 +14,29 @@ class AppImageDisplayWidget extends StatelessWidget {
 
   const AppImageDisplayWidget({
     super.key,
-    required this.imagePath,
+    this.imagePath,
+    this.imageBytes,
     this.margin,
     this.padding,
     this.borderRadius = 12.0,
     this.showShadow = true,
     this.isExpanded = true,
     this.fit = BoxFit.contain,
-  });
+  }) : assert(
+         imagePath != null || imageBytes != null,
+         'Either imagePath or imageBytes must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
+    Widget imageWidget;
+
+    if (imageBytes != null) {
+      imageWidget = Image.memory(imageBytes!, fit: fit);
+    } else {
+      imageWidget = Image.file(File(imagePath!), fit: fit);
+    }
+
     Widget imageContainer = Container(
       width: double.infinity,
       margin: margin ?? const EdgeInsets.all(16),
@@ -41,7 +55,7 @@ class AppImageDisplayWidget extends StatelessWidget {
           : BoxDecoration(borderRadius: BorderRadius.circular(borderRadius)),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: Image.file(File(imagePath), fit: fit),
+        child: imageWidget,
       ),
     );
 
