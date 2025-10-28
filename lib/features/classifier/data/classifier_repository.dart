@@ -15,12 +15,10 @@ class ClassifierRepository {
 
   // Input size MUST match the model's expected input
   // MobileNetV2 was trained on 224x224 images
-  // Changing this will cause errors or poor results
   static const int _inputSize = 224; // MobileNetV2 fixed input size
   static const int _numChannels = 3; // RGB
 
-  // Dynamic confidence threshold - can be adjusted for better results
-  double _threshold = 0.5; // Default: 50% confidence threshold
+  double _threshold = 0.5; // 50% confidence threshold
 
   /// Initialize the model and load labels
   Future<void> initialize() async {
@@ -75,7 +73,6 @@ class ClassifierRepository {
     try {
       final imageData = await _preprocessImage(imagePath);
 
-      // Prepare input and output tensors
       final input = [imageData];
       final outputShape = _interpreter!.getOutputTensor(0).shape;
       final output = List.generate(
@@ -83,7 +80,6 @@ class ClassifierRepository {
         (batch) => List.filled(outputShape[1], 0),
       );
 
-      // Run inference
       _interpreter!.run(input, output);
 
       return _processResults(output[0]);
@@ -143,7 +139,6 @@ class ClassifierRepository {
 
     final allPredictions = <Prediction>[];
 
-    // Convert uint8 outputs to confidence values (0-255 -> 0.0-1.0)
     for (int i = 0; i < outputs.length && i < _labels!.length; i++) {
       final confidence = outputs[i] / 255.0;
       allPredictions.add(
@@ -151,15 +146,12 @@ class ClassifierRepository {
       );
     }
 
-    // Sort by confidence
     allPredictions.sort((a, b) => b.confidence.compareTo(a.confidence));
 
-    // Filter by threshold
     final confidentPredictions = allPredictions
         .where((p) => p.confidence >= _threshold)
         .toList();
 
-    // Return top 5 predictions (prefer confident ones)
     final topPredictions = confidentPredictions.isNotEmpty
         ? confidentPredictions.take(5).toList()
         : allPredictions.take(5).toList();
@@ -207,7 +199,6 @@ class ClassifierRepository {
             .reduce((a, b) => a + b) /
         3;
 
-    // Adaptive threshold based on confidence distribution
     if (topConfidence > 0.8 && avgTopConfidence > 0.6) {
       setConfidenceThreshold(0.6);
     } else if (topConfidence > 0.6 && avgTopConfidence > 0.4) {
@@ -244,11 +235,15 @@ class ClassificationResult {
 
   /// Gets a quality indicator string
   String get qualityIndicator {
-    if (!isHighQuality) return "Low confidence";
-    if (topPrediction != null && topPrediction!.confidence >= 0.8)
+    if (!isHighQuality) {
+      return "Low confidence";
+    }
+    if (topPrediction != null && topPrediction!.confidence >= 0.8) {
       return "High confidence";
-    if (topPrediction != null && topPrediction!.confidence >= 0.6)
+    }
+    if (topPrediction != null && topPrediction!.confidence >= 0.6) {
       return "Medium confidence";
+    }
     return "Acceptable confidence";
   }
 

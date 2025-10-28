@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,17 +16,15 @@ class HomePage extends StatelessWidget {
     final picker = ImagePicker();
     final x = await picker.pickImage(source: ImageSource.gallery);
     if (x == null) return;
-
-    // on envoie juste le path
     context.read<AppPhotoCubit>().setCapturedPhoto(x.path);
-
-    // redirige vers la page d’affichage photo
     if (context.mounted) {
       context.push('/photo-display');
     }
   }
 
   void _openCamera(BuildContext context) => context.push(cameraRoute);
+
+  void _openPosePage(BuildContext context) => context.push('/pose');
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +46,12 @@ class HomePage extends StatelessWidget {
                 icon: Icons.photo_library,
                 label: 'Choisir une image',
                 backgroundColor: Colors.green,
+              ),
+              AppActionButton(
+                onPressed: () => _openPosePage(context),
+                icon: Icons.video_label,
+                label: 'Test pose',
+                backgroundColor: Colors.blue,
               ),
             ],
           ),
