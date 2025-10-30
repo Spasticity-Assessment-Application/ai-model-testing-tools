@@ -11,6 +11,7 @@ import 'pose_state.dart';
 class PoseCubit extends Cubit<PoseState> {
   final PoseRepository _repository;
   Timer? _playbackTimer;
+  bool _isPlaybackActive = false;
 
   static const MethodChannel _videoChannel = MethodChannel('pose_native');
 
@@ -182,7 +183,12 @@ class PoseCubit extends Cubit<PoseState> {
 
   void _startPlayback(int frameCount) {
     _playbackTimer?.cancel();
+    _isPlaybackActive = true;
     _playbackTimer = Timer.periodic(const Duration(milliseconds: 167), (timer) {
+      if (!_isPlaybackActive) {
+        timer.cancel();
+        return;
+      }
       if (state is PoseVideoAnalysisState) {
         final currentState = state as PoseVideoAnalysisState;
         final nextIndex =
@@ -208,6 +214,7 @@ class PoseCubit extends Cubit<PoseState> {
     if (state is PoseVideoAnalysisState) {
       final currentState = state as PoseVideoAnalysisState;
       if (currentState.isPlaying) {
+        _isPlaybackActive = false;
         _playbackTimer?.cancel();
         emit(
           PoseVideoAnalysisState(
@@ -228,6 +235,7 @@ class PoseCubit extends Cubit<PoseState> {
 
   @override
   Future<void> close() async {
+    _isPlaybackActive = false;
     _playbackTimer?.cancel();
     _repository.dispose();
     return super.close();
