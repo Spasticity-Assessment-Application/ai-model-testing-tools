@@ -11,8 +11,15 @@ import '../../data/pose_model.dart';
 
 class PoseResultsPage extends StatefulWidget {
   final String videoPath;
+  final bool analyzeFullVideo;
+  final int? desiredFrameCount;
 
-  const PoseResultsPage({super.key, required this.videoPath});
+  const PoseResultsPage({
+    super.key,
+    required this.videoPath,
+    this.analyzeFullVideo = false,
+    this.desiredFrameCount,
+  });
 
   @override
   State<PoseResultsPage> createState() => _PoseResultsPageState();
@@ -48,7 +55,11 @@ class _PoseResultsPageState extends State<PoseResultsPage> {
   }
 
   Future<void> _startAnalysis() async {
-    await _cubit.analyzeVideoFrames(widget.videoPath);
+    await _cubit.analyzeVideoFrames(
+      widget.videoPath,
+      analyzeFullVideo: widget.analyzeFullVideo,
+      frameCount: widget.desiredFrameCount,
+    );
   }
 
   @override

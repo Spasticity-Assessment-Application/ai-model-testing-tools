@@ -21,6 +21,7 @@ class PoseSetupPage extends StatefulWidget {
 class _PoseSetupPageState extends State<PoseSetupPage> {
   String? _videoPath;
   PoseModel? _selectedModel;
+  int _desiredFrameCount = 30;
   late PoseCubit _cubit;
 
   @override
@@ -82,7 +83,11 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
       MaterialPageRoute(
         builder: (context) => BlocProvider.value(
           value: _cubit,
-          child: PoseResultsPage(videoPath: _videoPath!),
+          child: PoseResultsPage(
+            videoPath: _videoPath!,
+            analyzeFullVideo: true,
+            desiredFrameCount: _desiredFrameCount,
+          ),
         ),
       ),
     );
@@ -92,7 +97,7 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Configuration de l\'analyse de pose')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -115,9 +120,64 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
             ),
             const SizedBox(height: 24),
 
+            // Analysis Options
+            const Text(
+              '2. Options d\'analyse',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
+
+            // Frame count configuration
+            const Text(
+              'Nombre de frames à analyser',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Row(
+                children: [
+                  const Text('Frames: ', style: TextStyle(fontSize: 14)),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 80,
+                    child: TextFormField(
+                      initialValue: _desiredFrameCount.toString(),
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        isDense: true,
+                      ),
+                      onChanged: (value) {
+                        final count = int.tryParse(value);
+                        if (count != null && count > 0 && count <= 100) {
+                          setState(() {
+                            _desiredFrameCount = count;
+                          });
+                        }
+                      },
+                      onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    '(10-100 recommandé)',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
             // Video Selection
             const Text(
-              '2. Sélectionner la vidéo',
+              '3. Sélectionner la vidéo',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
@@ -161,7 +221,7 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
 
             // Analysis Button
             const Text(
-              '3. Démarrer l\'analyse',
+              '4. Démarrer l\'analyse',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
@@ -178,7 +238,7 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
               mainAxisAlignment: MainAxisAlignment.start,
             ),
 
-            const Spacer(),
+            const SizedBox(height: 24),
           ],
         ),
       ),

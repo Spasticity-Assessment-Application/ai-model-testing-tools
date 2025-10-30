@@ -20,7 +20,11 @@ class _ModelSelectorState extends State<ModelSelector> {
   late PoseModel? _selectedModel;
 
   // List of available models
-  final List<PoseModel> _availableModels = [MediaPipePoseModel()];
+  final List<PoseModel> _availableModels = [
+    MediaPipePoseModel(modelAssetName: 'pose_landmarker_lite'),
+    MediaPipePoseModel(modelAssetName: 'pose_landmarker_full'),
+    MediaPipePoseModel(modelAssetName: 'pose_landmarker_heavy'),
+  ];
 
   @override
   void initState() {

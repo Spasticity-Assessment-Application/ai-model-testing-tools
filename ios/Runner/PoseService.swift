@@ -4,11 +4,11 @@ import UIKit
 
 class PoseService {
     private var landmarker: PoseLandmarker?
+    private let modelAssetName: String
 
-    private let modelAssetName = "pose_landmarker_lite"
-    private let modelAssetType = "task"
-
-    init() {
+    init(modelAssetName: String = "pose_landmarker_lite") {
+        self.modelAssetName = modelAssetName
+        print("🤖 iOS PoseService: Initializing with model: \(modelAssetName)")
         initializeLandmarker()
     }
 
@@ -16,7 +16,7 @@ class PoseService {
         do {
             guard
                 let modelPath = Bundle.main.path(
-                    forResource: modelAssetName, ofType: modelAssetType)
+                    forResource: modelAssetName, ofType: "task")
             else {
                 throw PoseEstimationError.modelNotFound
             }

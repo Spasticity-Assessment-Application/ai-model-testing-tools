@@ -14,6 +14,10 @@
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		8490E6C02EB0161D00B55ED1 /* PoseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8490E6BF2EB0161D00B55ED1 /* PoseService.swift */; };
 		8490E6C12EB0161D00B55ED1 /* PoseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8490E6BF2EB0161D00B55ED1 /* PoseService.swift */; };
+		84BC390B2EB105BB00FEDDDA /* pose_landmarker_full.task in Resources */ = {isa = PBXBuildFile; fileRef = 84BC390A2EB105BB00FEDDDA /* pose_landmarker_full.task */; };
+		84BC390C2EB105BB00FEDDDA /* pose_landmarker_full.task in Resources */ = {isa = PBXBuildFile; fileRef = 84BC390A2EB105BB00FEDDDA /* pose_landmarker_full.task */; };
+		84BC390E2EB105C400FEDDDA /* pose_landmarker_heavy.task in Resources */ = {isa = PBXBuildFile; fileRef = 84BC390D2EB105C400FEDDDA /* pose_landmarker_heavy.task */; };
+		84BC390F2EB105C400FEDDDA /* pose_landmarker_heavy.task in Resources */ = {isa = PBXBuildFile; fileRef = 84BC390D2EB105C400FEDDDA /* pose_landmarker_heavy.task */; };
 		84F9F63B2EAFBEF000E15AEE /* pose_landmarker_lite.task in Resources */ = {isa = PBXBuildFile; fileRef = 84F9F63A2EAFBEF000E15AEE /* pose_landmarker_lite.task */; };
 		91FE8F6D604B39B76D09829F /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22AC4F7ADE5FC6A17243742E /* Pods_Runner.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -60,6 +64,8 @@
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		8490E6BF2EB0161D00B55ED1 /* PoseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseService.swift; sourceTree = "<group>"; };
+		84BC390A2EB105BB00FEDDDA /* pose_landmarker_full.task */ = {isa = PBXFileReference; lastKnownFileType = file; path = pose_landmarker_full.task; sourceTree = "<group>"; };
+		84BC390D2EB105C400FEDDDA /* pose_landmarker_heavy.task */ = {isa = PBXFileReference; lastKnownFileType = file; path = pose_landmarker_heavy.task; sourceTree = "<group>"; };
 		84F9F63A2EAFBEF000E15AEE /* pose_landmarker_lite.task */ = {isa = PBXFileReference; lastKnownFileType = file; path = pose_landmarker_lite.task; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -145,6 +151,8 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				84F9F63A2EAFBEF000E15AEE /* pose_landmarker_lite.task */,
+				84BC390A2EB105BB00FEDDDA /* pose_landmarker_full.task */,
+				84BC390D2EB105C400FEDDDA /* pose_landmarker_heavy.task */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -259,6 +267,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84BC390F2EB105C400FEDDDA /* pose_landmarker_heavy.task in Resources */,
+				84BC390C2EB105BB00FEDDDA /* pose_landmarker_full.task in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,7 +277,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				84F9F63B2EAFBEF000E15AEE /* pose_landmarker_lite.task in Resources */,
+				84BC390B2EB105BB00FEDDDA /* pose_landmarker_full.task in Resources */,
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
+				84BC390E2EB105C400FEDDDA /* pose_landmarker_heavy.task in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,

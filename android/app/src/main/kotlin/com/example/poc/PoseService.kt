@@ -5,27 +5,27 @@ import android.graphics.BitmapFactory
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
 import com.google.mediapipe.tasks.vision.core.RunningMode
-import com.google.mediapipe.tasks.vision.core.VisionImage
+import com.google.mediapipe.tasks.core.BaseOptions
+import com.google.mediapipe.framework.image.BitmapImageBuilder
+import java.nio.ByteBuffer
 
-class PoseService(private val context: Context) {
+class PoseService(private val context: Context, private val modelAssetName: String = "pose_landmarker_lite") {
     private var landmarker: PoseLandmarker? = null
 
-    companion object {
-        private const val MODEL_ASSET = "pose_landmarker_lite.task"
-    }
-
     init {
+        println("🤖 Android PoseService: Initializing with model: $modelAssetName")
         initializeLandmarker()
     }
 
     private fun initializeLandmarker() {
         try {
             val assetManager = context.assets
-            val modelBuffer = assetManager.open(MODEL_ASSET).readBytes()
+            val modelBuffer = assetManager.open("$modelAssetName.task").readBytes()
+            val byteBuffer = ByteBuffer.wrap(modelBuffer)
             val options = PoseLandmarker.PoseLandmarkerOptions.builder()
                 .setBaseOptions(
-                    PoseLandmarker.BaseOptions.builder()
-                        .setModelAssetBuffer(modelBuffer)
+                    BaseOptions.builder()
+                        .setModelAssetBuffer(byteBuffer)
                         .build()
                 )
                 .setRunningMode(RunningMode.IMAGE)
@@ -44,8 +44,8 @@ class PoseService(private val context: Context) {
             val bitmap = BitmapFactory.decodeFile(imagePath)
                 ?: throw PoseEstimationException("Failed to decode image: $imagePath")
 
-            val visionImage = VisionImage.fromBitmap(bitmap)
-            val poseResult: PoseLandmarkerResult = landmarker.detect(visionImage)
+            val mpImage = BitmapImageBuilder(bitmap).build()
+            val poseResult: PoseLandmarkerResult = landmarker.detect(mpImage)
 
             extractKeypoints(poseResult)
         } catch (e: Exception) {
