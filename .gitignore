@@ -33,6 +33,9 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Instructions file
+.github/instructions/instructions.instructions.md
+
 # Symbolication related
 app.*.symbols
 
