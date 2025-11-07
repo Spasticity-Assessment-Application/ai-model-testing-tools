@@ -24,6 +24,8 @@ class PoseRepository {
   Future<PoseResult> analyzeVideoFrame(
     String videoPath, {
     int timeMs = 0,
+    int? originalWidth,
+    int? originalHeight,
   }) async {
     if (!_initialized) throw Exception('Pose model not initialized');
 
@@ -40,6 +42,10 @@ class PoseRepository {
       throw Exception('Failed to extract frame from video');
     }
 
-    return await _poseModel.analyzeImage(uint8list);
+    return await _poseModel.analyzeImage(
+      uint8list,
+      originalWidth: originalWidth,
+      originalHeight: originalHeight,
+    );
   }
 }

@@ -42,6 +42,7 @@ class PoseVideoAnalysisState extends PoseState {
   final String sourcePath;
   final int currentFrameIndex;
   final bool isPlaying;
+  final int totalAnalysisTimeMs;
 
   PoseVideoAnalysisState({
     required this.frameResults,
@@ -51,6 +52,7 @@ class PoseVideoAnalysisState extends PoseState {
     required this.sourcePath,
     required this.currentFrameIndex,
     required this.isPlaying,
+    required this.totalAnalysisTimeMs,
   });
 
   @override
@@ -62,11 +64,12 @@ class PoseVideoAnalysisState extends PoseState {
     sourcePath,
     currentFrameIndex,
     isPlaying,
+    totalAnalysisTimeMs,
   ];
 
   @override
   String toString() =>
-      'PoseVideoAnalysisState(path: $sourcePath, frames: ${frameResults.length}, current: $currentFrameIndex, playing: $isPlaying)';
+      'PoseVideoAnalysisState(path: $sourcePath, frames: ${frameResults.length}, current: $currentFrameIndex, playing: $isPlaying, totalTime: ${totalAnalysisTimeMs}ms)';
 }
 
 class PoseError extends PoseState {

@@ -234,6 +234,7 @@ class _PoseResultsPageState extends State<PoseResultsPage> {
                       state.imageWidth,
                       state.imageHeight,
                       _displayMode,
+                      _cubit.confidenceThreshold,
                     ),
                   ),
                 ),
@@ -243,8 +244,18 @@ class _PoseResultsPageState extends State<PoseResultsPage> {
         ),
         const SizedBox(height: 16),
         Text(
+          'Model: ${state.result.modelName}',
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 8),
+        Text(
           'Found ${state.result.keypoints.length} keypoints',
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Analysis time: ${state.result.analysisTimeMs}ms',
+          style: const TextStyle(fontSize: 14),
         ),
       ],
     );
@@ -265,6 +276,7 @@ class _PoseResultsPageState extends State<PoseResultsPage> {
                       state.frameWidths[state.currentFrameIndex],
                       state.frameHeights[state.currentFrameIndex],
                       _displayMode,
+                      _cubit.confidenceThreshold,
                     ),
                   ),
                 ),
@@ -275,6 +287,11 @@ class _PoseResultsPageState extends State<PoseResultsPage> {
         const SizedBox(height: 16),
 
         // Progress info
+        Text(
+          'Model: ${state.frameResults[state.currentFrameIndex].modelName}',
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 8),
         Text(
           'Frame ${state.currentFrameIndex + 1} of ${state.frameResults.length}',
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -311,8 +328,23 @@ class _PoseResultsPageState extends State<PoseResultsPage> {
 
         const SizedBox(height: 16),
         Text(
-          'Average keypoints per frame: ${(state.frameResults.fold<int>(0, (sum, result) => sum + result.keypoints.length) / state.frameResults.length).round()}',
+          'Keypoints: ${state.frameResults[state.currentFrameIndex].keypoints.length}',
           style: const TextStyle(fontSize: 14),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Current frame time: ${state.frameResults[state.currentFrameIndex].analysisTimeMs}ms',
+          style: const TextStyle(fontSize: 14),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Average time per frame: ${(state.frameResults.fold<int>(0, (sum, result) => sum + result.analysisTimeMs) / state.frameResults.length).round()}ms',
+          style: const TextStyle(fontSize: 14),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Total analysis time: ${state.totalAnalysisTimeMs}ms (${(state.totalAnalysisTimeMs / 1000).toStringAsFixed(2)}s)',
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
       ],
     );
@@ -324,12 +356,14 @@ class _KeypointPainter extends CustomPainter {
   final int imageWidth;
   final int imageHeight;
   final KeypointDisplayMode displayMode;
+  final double confidenceThreshold;
 
   _KeypointPainter(
     this.keypoints,
     this.imageWidth,
     this.imageHeight,
     this.displayMode,
+    this.confidenceThreshold,
   );
 
   // MediaPipe pose keypoints indices
@@ -357,7 +391,7 @@ class _KeypointPainter extends CustomPainter {
 
     for (final kp in filteredKeypoints) {
       // Skip low confidence keypoints
-      if (kp.score < 0.5) continue;
+      if (kp.score < confidenceThreshold) continue;
 
       final paint = Paint()
         ..color = _getKeypointColor(keypoints.indexOf(kp))

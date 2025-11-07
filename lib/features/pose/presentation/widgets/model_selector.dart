@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/pose_model.dart';
-import '../../data/media_pipe_pose_model.dart';
+import '../../data/tflite_pose_model.dart';
 
 class ModelSelector extends StatefulWidget {
   final PoseModel? selectedModel;
@@ -19,11 +19,11 @@ class ModelSelector extends StatefulWidget {
 class _ModelSelectorState extends State<ModelSelector> {
   late PoseModel? _selectedModel;
 
-  // List of available models
   final List<PoseModel> _availableModels = [
-    MediaPipePoseModel(modelAssetName: 'pose_landmarker_lite'),
-    MediaPipePoseModel(modelAssetName: 'pose_landmarker_full'),
-    MediaPipePoseModel(modelAssetName: 'pose_landmarker_heavy'),
+    TFLitePoseModel(modelAssetName: 'pose_model_quantized'),
+    TFLitePoseModel(modelAssetName: 'pose_model_dynamic'),
+    TFLitePoseModel(modelAssetName: 'pose_model_float16'),
+    TFLitePoseModel(modelAssetName: 'pose_model_float32'),
   ];
 
   @override

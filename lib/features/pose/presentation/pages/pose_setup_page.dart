@@ -9,6 +9,7 @@ import '../../logic/pose_cubit.dart';
 import '../../data/pose_model.dart';
 import '../../data/media_pipe_pose_model.dart';
 import '../widgets/widgets.dart';
+import '../widgets/confidence_selector.dart';
 import 'pose_results_page.dart';
 
 class PoseSetupPage extends StatefulWidget {
@@ -22,6 +23,7 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
   String? _videoPath;
   PoseModel? _selectedModel;
   int _desiredFrameCount = 30;
+  double _confidenceThreshold = 0.5;
   late PoseCubit _cubit;
 
   @override
@@ -44,6 +46,13 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
     // Recreate cubit with new model
     _cubit.close();
     _initializeCubit();
+  }
+
+  void _onConfidenceChanged(double value) {
+    setState(() {
+      _confidenceThreshold = value;
+    });
+    _cubit.setConfidenceThreshold(value);
   }
 
   Future<void> _pickVideo() async {
@@ -120,54 +129,74 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
             ),
             const SizedBox(height: 24),
 
+            // Confidence Threshold
+            const Text(
+              '2. Seuil de confiance des keypoints',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            ConfidenceSelector(
+              confidenceThreshold: _confidenceThreshold,
+              onConfidenceChanged: _onConfidenceChanged,
+            ),
+            const SizedBox(height: 24),
+
             // Analysis Options
             const Text(
-              '2. Options d\'analyse',
+              '3. Options d\'analyse',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
 
-            // Frame count configuration
-            const Text(
-              'Nombre de frames à analyser',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 8),
+            // Wrap the entire analysis options section in GestureDetector
             GestureDetector(
               onTap: () => FocusScope.of(context).unfocus(),
-              child: Row(
+              behavior: HitTestBehavior.translucent,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Frames: ', style: TextStyle(fontSize: 14)),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 80,
-                    child: TextFormField(
-                      initialValue: _desiredFrameCount.toString(),
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.done,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        isDense: true,
-                      ),
-                      onChanged: (value) {
-                        final count = int.tryParse(value);
-                        if (count != null && count > 0 && count <= 100) {
-                          setState(() {
-                            _desiredFrameCount = count;
-                          });
-                        }
-                      },
-                      onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
+                  // Frame count configuration
                   const Text(
-                    '(10-100 recommandé)',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                    'Nombre de frames à analyser',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Text('Frames: ', style: TextStyle(fontSize: 14)),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: 80,
+                        child: TextFormField(
+                          initialValue: _desiredFrameCount.toString(),
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.done,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            isDense: true,
+                          ),
+                          onChanged: (value) {
+                            final count = int.tryParse(value);
+                            if (count != null && count > 0 && count <= 100) {
+                              setState(() {
+                                _desiredFrameCount = count;
+                              });
+                            }
+                          },
+                          onFieldSubmitted: (_) =>
+                              FocusScope.of(context).unfocus(),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        '(10-100 recommandé)',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
                   ),
                 ],
               ),

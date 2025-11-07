@@ -5,18 +5,19 @@ import 'package:image/image.dart' as img;
 import 'package:video_thumbnail/video_thumbnail.dart';
 import '../data/pose_repository.dart';
 import '../data/pose_model.dart';
-import '../data/media_pipe_pose_model.dart';
+import '../data/tflite_pose_model.dart';
 import 'pose_state.dart';
 
 class PoseCubit extends Cubit<PoseState> {
   final PoseRepository _repository;
   Timer? _playbackTimer;
   bool _isPlaybackActive = false;
+  double _confidenceThreshold = 0.5; // Seuil par défaut
 
   static const MethodChannel _videoChannel = MethodChannel('pose_native');
 
   PoseCubit({PoseModel? poseModel})
-    : _repository = PoseRepository(poseModel ?? MediaPipePoseModel()),
+    : _repository = PoseRepository(poseModel ?? TFLitePoseModel()),
       super(PoseInitial());
 
   Future<void> initialize() async {
@@ -26,6 +27,15 @@ class PoseCubit extends Cubit<PoseState> {
       emit(PoseReady());
     } catch (e) {
       emit(PoseError('Initialization failed: $e'));
+    }
+  }
+
+  double get confidenceThreshold => _confidenceThreshold;
+
+  void setConfidenceThreshold(double threshold) {
+    _confidenceThreshold = threshold;
+    if (state is PoseResultState || state is PoseVideoAnalysisState) {
+      emit(state);
     }
   }
 
@@ -61,6 +71,8 @@ class PoseCubit extends Cubit<PoseState> {
       final res = await _repository.analyzeVideoFrame(
         videoPath,
         timeMs: timeMs,
+        originalWidth: image.width,
+        originalHeight: image.height,
       );
       emit(
         PoseResultState(
@@ -126,6 +138,9 @@ class PoseCubit extends Cubit<PoseState> {
       final intervalMs = actualDurationMs ~/ actualFrameCount;
       const int maxRetries = 3;
 
+      // Measure total analysis time
+      final analysisStartTime = DateTime.now().millisecondsSinceEpoch;
+
       for (int i = 0; i < actualFrameCount; i++) {
         final int timeMs = i * intervalMs;
         bool frameExtracted = false;
@@ -149,6 +164,8 @@ class PoseCubit extends Cubit<PoseState> {
             final result = await _repository.analyzeVideoFrame(
               videoPath,
               timeMs: adjustedTimeMs,
+              originalWidth: image.width,
+              originalHeight: image.height,
             );
             frameResults.add(result);
             frameExtracted = true;
@@ -157,6 +174,9 @@ class PoseCubit extends Cubit<PoseState> {
           }
         }
       }
+
+      final analysisEndTime = DateTime.now().millisecondsSinceEpoch;
+      final totalAnalysisTimeMs = analysisEndTime - analysisStartTime;
 
       if (frameResults.isNotEmpty && frameImages.isNotEmpty) {
         emit(
@@ -168,6 +188,7 @@ class PoseCubit extends Cubit<PoseState> {
             sourcePath: videoPath,
             currentFrameIndex: 0,
             isPlaying: true,
+            totalAnalysisTimeMs: totalAnalysisTimeMs,
           ),
         );
 
@@ -204,6 +225,7 @@ class PoseCubit extends Cubit<PoseState> {
             sourcePath: currentState.sourcePath,
             currentFrameIndex: nextIndex,
             isPlaying: true,
+            totalAnalysisTimeMs: currentState.totalAnalysisTimeMs,
           ),
         );
       }
@@ -225,6 +247,7 @@ class PoseCubit extends Cubit<PoseState> {
             sourcePath: currentState.sourcePath,
             currentFrameIndex: currentState.currentFrameIndex,
             isPlaying: false,
+            totalAnalysisTimeMs: currentState.totalAnalysisTimeMs,
           ),
         );
       } else {

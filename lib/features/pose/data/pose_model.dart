@@ -11,7 +11,11 @@ abstract class PoseModel {
   Future<void> initialize();
 
   /// Analyzes an image and returns keypoints
-  Future<PoseResult> analyzeImage(Uint8List imageBytes);
+  Future<PoseResult> analyzeImage(
+    Uint8List imageBytes, {
+    int? originalWidth,
+    int? originalHeight,
+  });
 
   /// Releases model resources
   void dispose();
@@ -26,17 +30,19 @@ class PoseResult {
   final int imageWidth;
   final int imageHeight;
   final String modelName;
+  final int analysisTimeMs;
 
   PoseResult({
     required this.keypoints,
     required this.imageWidth,
     required this.imageHeight,
     required this.modelName,
+    required this.analysisTimeMs,
   });
 
   @override
   String toString() =>
-      'PoseResult(model: $modelName, keypoints: ${keypoints.length}, size: ${imageWidth}x$imageHeight)';
+      'PoseResult(model: $modelName, keypoints: ${keypoints.length}, size: ${imageWidth}x$imageHeight, time: ${analysisTimeMs}ms)';
 }
 
 /// Keypoint of a pose
