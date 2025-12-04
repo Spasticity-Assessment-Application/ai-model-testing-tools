@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as img;
@@ -22,10 +23,18 @@ class PoseCubit extends Cubit<PoseState> {
 
   Future<void> initialize() async {
     try {
+      developer.log('PoseCubit: Starting initialization...', name: 'PoseCubit');
       emit(PoseLoading());
       await _repository.initialize();
+      developer.log('PoseCubit: Initialization successful', name: 'PoseCubit');
       emit(PoseReady());
-    } catch (e) {
+    } catch (e, stackTrace) {
+      developer.log(
+        'PoseCubit: Initialization failed',
+        name: 'PoseCubit',
+        error: e,
+        stackTrace: stackTrace,
+      );
       emit(PoseError('Initialization failed: $e'));
     }
   }
@@ -138,6 +147,11 @@ class PoseCubit extends Cubit<PoseState> {
       final intervalMs = actualDurationMs ~/ actualFrameCount;
       const int maxRetries = 3;
 
+      developer.log(
+        'PoseCubit: Starting frame extraction - $actualFrameCount frames over ${actualDurationMs}ms',
+        name: 'PoseCubit',
+      );
+
       // Measure total analysis time
       final analysisStartTime = DateTime.now().millisecondsSinceEpoch;
 
@@ -155,9 +169,21 @@ class PoseCubit extends Cubit<PoseState> {
               maxWidth: 256,
               maxHeight: 256,
             );
-            if (frameBytes == null) continue;
+            if (frameBytes == null) {
+              developer.log(
+                'PoseCubit: Frame $i at ${adjustedTimeMs}ms - null bytes',
+                name: 'PoseCubit',
+              );
+              continue;
+            }
             final image = img.decodeImage(frameBytes);
-            if (image == null) continue;
+            if (image == null) {
+              developer.log(
+                'PoseCubit: Frame $i at ${adjustedTimeMs}ms - failed to decode',
+                name: 'PoseCubit',
+              );
+              continue;
+            }
             frameImages.add(frameBytes);
             frameWidths.add(image.width);
             frameHeights.add(image.height);
@@ -169,14 +195,26 @@ class PoseCubit extends Cubit<PoseState> {
             );
             frameResults.add(result);
             frameExtracted = true;
-          } catch (_) {
-            // ignore and retry
+            developer.log(
+              'PoseCubit: Frame $i extracted successfully (${frameResults.length}/$actualFrameCount)',
+              name: 'PoseCubit',
+            );
+          } catch (e) {
+            developer.log(
+              'PoseCubit: Frame $i retry $retry failed: $e',
+              name: 'PoseCubit',
+            );
           }
         }
       }
 
       final analysisEndTime = DateTime.now().millisecondsSinceEpoch;
       final totalAnalysisTimeMs = analysisEndTime - analysisStartTime;
+
+      developer.log(
+        'PoseCubit: Extraction complete - ${frameResults.length} frames extracted',
+        name: 'PoseCubit',
+      );
 
       if (frameResults.isNotEmpty && frameImages.isNotEmpty) {
         emit(
@@ -195,9 +233,21 @@ class PoseCubit extends Cubit<PoseState> {
         // Start playback
         _startPlayback(frameResults.length);
       } else {
+        developer.log(
+          'PoseCubit: No frames extracted',
+          name: 'PoseCubit',
+          error:
+              'frameResults: ${frameResults.length}, frameImages: ${frameImages.length}',
+        );
         emit(PoseError('Failed to extract any valid frames from video'));
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      developer.log(
+        'PoseCubit: Video analysis failed',
+        name: 'PoseCubit',
+        error: e,
+        stackTrace: stackTrace,
+      );
       emit(PoseError('Video analysis failed: $e'));
     }
   }

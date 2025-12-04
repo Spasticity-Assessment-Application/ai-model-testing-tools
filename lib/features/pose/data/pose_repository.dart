@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'pose_model.dart';
 
@@ -8,13 +9,31 @@ class PoseRepository {
   PoseRepository(this._poseModel);
 
   Future<void> initialize() async {
-    if (_initialized) return;
+    if (_initialized) {
+      developer.log(
+        'PoseRepository: Already initialized',
+        name: 'PoseRepository',
+      );
+      return;
+    }
 
+    developer.log(
+      'PoseRepository: Initializing model ${_poseModel.name}',
+      name: 'PoseRepository',
+    );
     await _poseModel.initialize();
     _initialized = true;
+    developer.log(
+      'PoseRepository: Initialization complete',
+      name: 'PoseRepository',
+    );
   }
 
   void dispose() {
+    developer.log(
+      'PoseRepository: Disposing resources',
+      name: 'PoseRepository',
+    );
     _poseModel.dispose();
     _initialized = false;
   }

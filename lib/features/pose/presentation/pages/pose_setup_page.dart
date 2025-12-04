@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,8 +7,9 @@ import 'package:file_picker/file_picker.dart';
 
 import '../../../../core/presentation/widgets/widgets.dart';
 import '../../logic/pose_cubit.dart';
+import '../../logic/pose_state.dart';
 import '../../data/pose_model.dart';
-import '../../data/media_pipe_pose_model.dart';
+import '../../data/tflite_pose_model.dart';
 import '../widgets/widgets.dart';
 import '../widgets/confidence_selector.dart';
 import 'pose_results_page.dart';
@@ -24,35 +26,63 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
   PoseModel? _selectedModel;
   int _desiredFrameCount = 30;
   double _confidenceThreshold = 0.5;
-  late PoseCubit _cubit;
+  PoseCubit? _cubit;
+  bool _isInitializing = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize with default model
-    _selectedModel = MediaPipePoseModel();
+    _selectedModel = TFLitePoseModel(
+      modelAssetName: 'pose_model_mnv3l_float32',
+    );
     _initializeCubit();
   }
 
-  void _initializeCubit() {
+  Future<void> _initializeCubit() async {
+    if (_isInitializing) {
+      developer.log(
+        'PoseSetupPage: Already initializing',
+        name: 'PoseSetupPage',
+      );
+      return;
+    }
+
+    developer.log(
+      'PoseSetupPage: Starting cubit initialization',
+      name: 'PoseSetupPage',
+    );
+    setState(() {
+      _isInitializing = true;
+    });
+
     _cubit = PoseCubit(poseModel: _selectedModel);
-    _cubit.initialize();
+    await _cubit!.initialize();
+
+    developer.log(
+      'PoseSetupPage: Cubit state after init: ${_cubit!.state.runtimeType}',
+      name: 'PoseSetupPage',
+    );
+
+    if (mounted) {
+      setState(() {
+        _isInitializing = false;
+      });
+    }
   }
 
-  void _onModelChanged(PoseModel? model) {
+  Future<void> _onModelChanged(PoseModel? model) async {
     setState(() {
       _selectedModel = model;
     });
-    // Recreate cubit with new model
-    _cubit.close();
-    _initializeCubit();
+    await _cubit?.close();
+    await _initializeCubit();
   }
 
   void _onConfidenceChanged(double value) {
     setState(() {
       _confidenceThreshold = value;
     });
-    _cubit.setConfidenceThreshold(value);
+    _cubit?.setConfidenceThreshold(value);
   }
 
   Future<void> _pickVideo() async {
@@ -68,7 +98,7 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
     }
   }
 
-  void _startAnalysis() {
+  Future<void> _startAnalysis() async {
     if (_videoPath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -87,11 +117,32 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
       return;
     }
 
-    // Navigate to results page with the cubit
+    if (_cubit == null || _isInitializing) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Initialisation en cours, veuillez patienter...'),
+        ),
+      );
+      return;
+    }
+
+    if (_cubit!.state is! PoseReady) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Échec de l\'initialisation: ${_cubit!.state.runtimeType}',
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => BlocProvider.value(
-          value: _cubit,
+          value: _cubit!,
           child: PoseResultsPage(
             videoPath: _videoPath!,
             analyzeFullVideo: true,
@@ -276,7 +327,7 @@ class _PoseSetupPageState extends State<PoseSetupPage> {
 
   @override
   void dispose() {
-    _cubit.close();
+    _cubit?.close();
     super.dispose();
   }
 }

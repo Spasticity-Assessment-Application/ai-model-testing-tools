@@ -20,10 +20,8 @@ class _ModelSelectorState extends State<ModelSelector> {
   late PoseModel? _selectedModel;
 
   final List<PoseModel> _availableModels = [
-    TFLitePoseModel(modelAssetName: 'pose_model_quantized'),
-    TFLitePoseModel(modelAssetName: 'pose_model_dynamic'),
-    TFLitePoseModel(modelAssetName: 'pose_model_float16'),
-    TFLitePoseModel(modelAssetName: 'pose_model_float32'),
+    TFLitePoseModel(modelAssetName: 'pose_model_mnv3l_float32'),
+    TFLitePoseModel(modelAssetName: 'pose_model_mnv3s_float32'),
   ];
 
   @override

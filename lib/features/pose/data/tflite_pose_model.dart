@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
@@ -6,10 +7,10 @@ import 'pose_model.dart';
 
 class TFLitePoseModel implements PoseModel {
   final String _modelAssetName;
-  static const int _inputWidth = 192;
-  static const int _inputHeight = 192;
-  static const int _heatmapWidth = 48;
-  static const int _heatmapHeight = 48;
+  late final int _inputWidth;
+  late final int _inputHeight;
+  late final int _heatmapWidth;
+  late final int _heatmapHeight;
   static const int _numKeypoints = 3;
 
   Interpreter? _interpreter;
@@ -17,36 +18,42 @@ class TFLitePoseModel implements PoseModel {
   int _originalImageWidth = 0;
   int _originalImageHeight = 0;
 
-  TFLitePoseModel({String modelAssetName = 'pose_model_quantized'})
-    : _modelAssetName = modelAssetName;
+  TFLitePoseModel({String modelAssetName = 'pose_model_mnv3l_float32'})
+    : _modelAssetName = modelAssetName {
+    if (modelAssetName == 'pose_model_mnv3s_float32') {
+      _inputWidth = 256;
+      _inputHeight = 256;
+      _heatmapWidth = 64;
+      _heatmapHeight = 64;
+    } else {
+      _inputWidth = 384;
+      _inputHeight = 384;
+      _heatmapWidth = 96;
+      _heatmapHeight = 96;
+    }
+  }
 
   @override
   String get name {
     switch (_modelAssetName) {
-      case 'pose_model_dynamic':
-        return 'TFLite Pose (Dynamic)';
-      case 'pose_model_float16':
-        return 'TFLite Pose (Float16)';
-      case 'pose_model_float32':
-        return 'TFLite Pose (Float32)';
-      case 'pose_model_quantized':
+      case 'pose_model_mnv3l_float32':
+        return 'MobileNetV3-Large (Float32)';
+      case 'pose_model_mnv3s_float32':
+        return 'MobileNetV3-Small (Float32)';
       default:
-        return 'TFLite Pose (Quantized)';
+        return 'TFLite Pose Model';
     }
   }
 
   @override
   String get description {
     switch (_modelAssetName) {
-      case 'pose_model_dynamic':
-        return 'TensorFlow Lite dynamic quantization model for hip, knee, and ankle detection';
-      case 'pose_model_float16':
-        return 'TensorFlow Lite Float16 precision model for hip, knee, and ankle detection';
-      case 'pose_model_float32':
-        return 'TensorFlow Lite Float32 precision model for hip, knee, and ankle detection';
-      case 'pose_model_quantized':
+      case 'pose_model_mnv3l_float32':
+        return 'MobileNetV3-Large Float32 (384x384, 96x96 heatmap) - Hanche, Genoux, Cheville';
+      case 'pose_model_mnv3s_float32':
+        return 'MobileNetV3-Small Float32 (256x256, 64x64 heatmap) - Hanche, Genoux, Cheville';
       default:
-        return 'TensorFlow Lite INT8 quantized model for hip, knee, and ankle detection';
+        return 'TensorFlow Lite pose detection model - Hanche, Genoux, Cheville';
     }
   }
 
@@ -55,14 +62,34 @@ class TFLitePoseModel implements PoseModel {
 
   @override
   Future<void> initialize() async {
-    if (_isInitialized) return;
+    if (_isInitialized) {
+      developer.log(
+        'TFLitePoseModel: Already initialized',
+        name: 'TFLitePoseModel',
+      );
+      return;
+    }
 
     try {
+      developer.log(
+        'TFLitePoseModel: Loading model from assets/models/$_modelAssetName.tflite',
+        name: 'TFLitePoseModel',
+      );
       _interpreter = await Interpreter.fromAsset(
         'assets/models/$_modelAssetName.tflite',
       );
       _isInitialized = true;
-    } catch (e) {
+      developer.log(
+        'TFLitePoseModel: Model loaded successfully',
+        name: 'TFLitePoseModel',
+      );
+    } catch (e, stackTrace) {
+      developer.log(
+        'TFLitePoseModel: Failed to load model',
+        name: 'TFLitePoseModel',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw Exception('Failed to load TFLite model: $e');
     }
   }
